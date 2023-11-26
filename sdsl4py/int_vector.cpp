@@ -7,9 +7,13 @@ namespace py = pybind11;
 using sdsl::int_vector;
 
 template <class T>
-inline void add_intvector(py::module &m, const char* name){
+inline auto add_intvector(py::module &m, const char* name){
+
+    //utility function to test size
+    m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
+
     //NOTE: in tests of int_vector<0> with int_width = 0 the width becomes 64 automatically, this might not be the expected behavior
-    py::class_<T>(m, name, py::buffer_protocol())
+    return py::class_<T>(m, name, py::buffer_protocol())
         .def(py::init([](uint64_t size, uint64_t default_value, uint8_t int_width){
             return new T(size, default_value, int_width);
         }),R"doc(
@@ -188,19 +192,13 @@ inline void add_intvector(py::module &m, const char* name){
         .def(py::self |= py::self, "Bitwise OR assignment operator.")
         .def(py::self ^= py::self, "Bitwise XOR assignment operator.")
         
-        //TODO: rest of iterator methods.
+        //TODO: test rest of iterator methods.
         .def("__iter__", [](const py::sequence &self){
             return py::make_iterator(self.begin(), self.end());
         },
         py::keep_alive<0, 1>(), py::is_operator(), "Iterator for int_vector");
         
-        //TODO: flip method for bit vectors
-        //.def("flip", &T::flip, "Flip all bits of bit_vector");
-
         //TODO: read header
-
-        //utility function to test size
-        m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
 }
 
 PYBIND11_MODULE(sdsl4py, m){
@@ -216,9 +214,7 @@ PYBIND11_MODULE(sdsl4py, m){
     add_intvector<int_vector<64>>(m, "int_vector_64");
     
     //int vector bit width 1
-    add_intvector<int_vector<1>>(m, "bit_vector");
-
-   
+    add_intvector<int_vector<1>>(m, "bit_vector").def("flip", &int_vector<1>::flip, "Flip all bits of bit_vector");
 
     m.attr("__version__") = "0.0.1";
 }
