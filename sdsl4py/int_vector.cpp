@@ -8,6 +8,7 @@ using sdsl::int_vector;
 
 template <class T>
 inline void add_intvector(py::module &m, const char* name){
+    //NOTE: in tests of int_vector<0> with int_width = 0 the width becomes 64 automatically, this might not be the expected behavior
     py::class_<T>(m, name, py::buffer_protocol())
         .def(py::init([](uint64_t size, uint64_t default_value, uint8_t int_width){
             return new T(size, default_value, int_width);
@@ -137,8 +138,8 @@ inline void add_intvector(py::module &m, const char* name){
                 width
         )doc")
         .def("write_data", &T::write_data, py::arg("out"), "Write data to a stream")
-        //TODO serialize funciton and serialize to buffer info
-        //TODO load from stream function
+        //TODO: serialize funciton and serialize to buffer info
+        //TODO: load from stream function
         .def("__getitem__", [](const T &self, size_t index) {
             if (index >= self.size()) {
                 throw py::index_error("Index out of bounds");
@@ -185,19 +186,20 @@ inline void add_intvector(py::module &m, const char* name){
         .def(py::self >= py::self, "Greater or equal operator.")
         .def(py::self &= py::self, "Bitwise AND assignment operator.")
         .def(py::self |= py::self, "Bitwise OR assignment operator.")
-        .def(py::self ^= py::self, "Bitwise XOR assignment operator.");
+        .def(py::self ^= py::self, "Bitwise XOR assignment operator.")
         
-        //TODO iterators
-        /*
-        .def("__iter__", [](T &self){
+        //TODO: rest of iterator methods.
+        .def("__iter__", [](const py::sequence &self){
             return py::make_iterator(self.begin(), self.end());
         },
-        py::keep_alive<0, 1>(), "Iterator for int_vector");
-        */
-        //TODO flip method for bit vectors
- 
-        //TODO read header
+        py::keep_alive<0, 1>(), py::is_operator(), "Iterator for int_vector");
+        
+        //TODO: flip method for bit vectors
+        //.def("flip", &T::flip, "Flip all bits of bit_vector");
 
+        //TODO: read header
+
+        //utility function to test size
         m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
 }
 
@@ -206,6 +208,7 @@ PYBIND11_MODULE(sdsl4py, m){
 
     //Run time fixed width vector
     add_intvector<int_vector<0>>(m, "int_vector");
+
     //Compile time fixed width vector
     add_intvector<int_vector<8>>(m, "int_vector_8");
     add_intvector<int_vector<16>>(m, "int_vector_16");
