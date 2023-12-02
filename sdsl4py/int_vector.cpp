@@ -27,7 +27,7 @@ inline auto add_intvector(py::module &m, const char* name){
             See Also:
                 resize
                 width
-        )doc", py::arg("size") = 1, py::arg("default_value") = 0, py::arg("int_width") = 0)
+        )doc", py::arg("size") = 1, py::arg("default_value") = 0, py::arg("int_width") = 64)
         .def("__bool__", [](T &self){
             return !self.empty();
         })
@@ -196,9 +196,15 @@ inline auto add_intvector(py::module &m, const char* name){
         .def("__iter__", [](const py::sequence &self){
             return py::make_iterator(self.begin(), self.end());
         },
-        py::keep_alive<0, 1>(), py::is_operator(), "Iterator for int_vector");
+        py::keep_alive<0, 1>(), py::is_operator(), "Iterator for int_vector")
+        
+        //TODO: add dunder   methods
+        .def("__str__", [](T& self){
+            return sdsl::util::to_string(self);
+        });
         
         //TODO: read header
+        
 }
 
 PYBIND11_MODULE(sdsl4py, m){

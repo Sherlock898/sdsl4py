@@ -31,5 +31,11 @@
 *.out
 *.app
 
+# pytest
+.pytest_cache/
+*.pyc
+__pycache__/
+.coverage
+
 build/
 .vscode/
