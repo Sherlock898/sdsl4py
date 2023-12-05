@@ -1,3 +1,6 @@
+#ifndef INT_VECTOR_CPP
+#define INT_VECTOR_CPP
+
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <sdsl/int_vector.hpp>
@@ -7,7 +10,7 @@ namespace py = pybind11;
 using sdsl::int_vector;
 
 template <class T>
-inline auto add_intvector(py::module &m, const char* name){
+inline auto add_int_vector(py::module &m, const char* name){
 
     //utility function to test size
     m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
@@ -207,20 +210,18 @@ inline auto add_intvector(py::module &m, const char* name){
         
 }
 
-PYBIND11_MODULE(sdsl4py, m){
-    m.doc() = "Python bindings for sdsl";
-
+void int_vector_wrapper(py::module &m){
     //Run time fixed width vector
-    add_intvector<int_vector<0>>(m, "int_vector");
+    add_int_vector<int_vector<0>>(m, "int_vector");
 
     //Compile time fixed width vector
-    add_intvector<int_vector<8>>(m, "int_vector_8");
-    add_intvector<int_vector<16>>(m, "int_vector_16");
-    add_intvector<int_vector<32>>(m, "int_vector_32");
-    add_intvector<int_vector<64>>(m, "int_vector_64");
+    add_int_vector<int_vector<8>>(m, "int_vector_8");
+    add_int_vector<int_vector<16>>(m, "int_vector_16");
+    add_int_vector<int_vector<32>>(m, "int_vector_32");
+    add_int_vector<int_vector<64>>(m, "int_vector_64");
     
     //int vector bit width 1
-    add_intvector<int_vector<1>>(m, "bit_vector").def("flip", &int_vector<1>::flip, "Flip all bits of bit_vector");
-
-    m.attr("__version__") = "0.0.1";
+    add_int_vector<int_vector<1>>(m, "bit_vector").def("flip", &int_vector<1>::flip, "Flip all bits of bit_vector");
 }
+
+#endif //INT_VECTOR_CPP

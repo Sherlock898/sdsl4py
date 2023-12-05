@@ -5,10 +5,8 @@ import sdsl4py
 import pytest
 import re
 
-#@pytest.mark.parametrize("vector_type, vector_size", [sdsl4py.int_vector, sdsl4py.int_vector_8,
-#                                        sdsl4py.int_vector_16, sdsl4py.int_vector_32, 
-#                                        sdsl4py.int_vector_64])
 
+#TODO these tests does not cover all functions of int_vector, however most important ones are covered
 @pytest.mark.parametrize("vector_width", [i for i in range(1, 65)])
 def test_int_vector(vector_width):
     VECTOR_SIZE = 5
