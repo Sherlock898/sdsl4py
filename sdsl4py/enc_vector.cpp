@@ -56,6 +56,7 @@ void enc_vector_wrapper(py::module &m){
 
     add_enc_vlc_vector<vlc_vector<sdsl::coder::elias_delta, 128, 0>>(m, "vlc_vector_elias_delta");
     add_enc_vlc_vector<vlc_vector<sdsl::coder::elias_gamma, 128, 0>>(m, "vlc_vector_elias_gamma");
+    add_enc_vlc_vector<vlc_vector<sdsl::coder::fibonacci, 128, 0>>(m, "vlc_vector_fibonacci");
     add_enc_vlc_vector<vlc_vector<sdsl::coder::comma<2>, 128, 0>>(m, "vlc_vector_comma_2");
 
     add_enc_vector<dac_vector<>>(m, "dac_vector");
