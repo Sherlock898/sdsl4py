@@ -12,8 +12,9 @@ using sdsl::int_vector;
 template <class T>
 inline auto add_int_vector(py::module &m, const char* name){
 
-    //utility function to test size
+    //utility functions to test size
     m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
+    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>);
 
     //NOTE: in tests of int_vector<0> with int_width = 0 the width becomes 64 automatically, this might not be the expected behavior
     return py::class_<T>(m, name, py::buffer_protocol())

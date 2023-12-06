@@ -12,6 +12,7 @@ PYBIND11_MODULE(sdsl4py, m){
     m.doc() = "Python bindings for sdsl";
 
     int_vector_wrapper(m);
+    enc_vector_wrapper(m);
 
     m.attr("__version__") = "0.0.1";
 }
