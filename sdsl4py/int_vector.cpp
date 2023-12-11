@@ -3,6 +3,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
+#include <pybind11/iostream.h>
 #include <sdsl/int_vector.hpp>
 
 namespace py = pybind11;
@@ -13,8 +14,11 @@ template <class T>
 inline auto add_int_vector(py::module &m, const char* name){
 
     //utility functions to test size
-    m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
-    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>);
+    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("sdsl_object"));
+    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("sdsl_object"));
+    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+
 
     //NOTE: in tests of int_vector<0> with int_width = 0 the width becomes 64 automatically, this might not be the expected behavior
     return py::class_<T>(m, name, py::buffer_protocol())
@@ -145,7 +149,11 @@ inline auto add_int_vector(py::module &m, const char* name){
             See Also:
                 width
         )doc")
-        .def("write_data", &T::write_data, py::arg("out"), "Write data to a stream")
+        //TODO: fix these functions 
+        //.def("write_data", &T::write_data, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>(), py::arg("out"), "Write data to a stream")
+        .def("write_data", [](const T& self){
+            py::print(self.write_data(std::cout));
+        })
         //TODO: serialize funciton and serialize to buffer info
         //TODO: load from stream function
         .def("__getitem__", [](const T &self, size_t index) {

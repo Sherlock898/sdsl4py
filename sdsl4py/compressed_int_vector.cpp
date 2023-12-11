@@ -15,8 +15,11 @@ using sdsl::dac_vector;
 template <class T>
 inline auto add_enc_vector(py::module &m, const char* name){
 
-    m.def("size_in_bytes", &sdsl::size_in_bytes<T>);
-    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>);
+    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("sdsl_object"));
+    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("sdsl_object"));
+    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+
 
     return py::class_<T>(m, name)
     .def(py::init([](const sdsl::int_vector<0> container){

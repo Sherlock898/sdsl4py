@@ -4,7 +4,7 @@
 #include <sdsl/enc_vector.hpp>
 
 #include "int_vector.cpp"
-#include "enc_vector.cpp"
+#include "compressed_int_vector.cpp"
 
 namespace py = pybind11;
 
