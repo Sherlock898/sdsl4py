@@ -25,6 +25,7 @@ inline auto add_enc_vector(py::module &m, const char* name){
     .def(py::init([](const sdsl::int_vector<0> container){
         return new T(container);
     }), py::arg("container"))
+    .def(py::init<>())
     .def("__getitem__", [](const T v, int index){
         return v[index];
     })
