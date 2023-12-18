@@ -13,7 +13,7 @@ using sdsl::dac_vector;
 
 
 template <class T>
-inline auto add_enc_vector(py::module &m, const char* name){
+inline auto add_compressed_vector(py::module &m, const char* name){
 
     m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("v"), R"doc(
         Returns the size of the data structure in bytes.
@@ -80,7 +80,7 @@ inline auto add_enc_vector(py::module &m, const char* name){
 
 template <class T>
 inline auto add_enc_vlc_vector(py::module &m, const char* name){
-    add_enc_vector<T>(m, name).def("get_sample_dens", &T::get_sample_dens);
+    add_compressed_vector<T>(m, name).def("get_sample_dens", &T::get_sample_dens);
 }
 
 void enc_vector_wrapper(py::module &m){
@@ -95,7 +95,7 @@ void enc_vector_wrapper(py::module &m){
     add_enc_vlc_vector<vlc_vector<sdsl::coder::fibonacci, 128, 0>>(m, "vlc_vector_fibonacci");
     add_enc_vlc_vector<vlc_vector<sdsl::coder::comma<2>, 128, 0>>(m, "vlc_vector_comma_2");
 
-    add_enc_vector<dac_vector<>>(m, "dac_vector");
+    add_compressed_vector<dac_vector<>>(m, "dac_vector");
 }
 
 
