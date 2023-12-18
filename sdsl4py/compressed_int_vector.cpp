@@ -15,10 +15,42 @@ using sdsl::dac_vector;
 template <class T>
 inline auto add_enc_vector(py::module &m, const char* name){
 
-    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("sdsl_object"));
-    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("sdsl_object"));
-    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
-    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("v"), R"doc(
+        Returns the size of the data structure in bytes.
+
+        Parameters:
+            v: Data structure to get the size of.
+
+        Returns:
+            The size of the data structure in bytes.)doc");
+    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("v"), R"doc(
+        Returns the size of the data structure in megabytes.
+
+        Parameters:
+            v: Data structure to get the size of.
+
+        Returns:
+            The size of the data structure in megabytes.)doc");
+    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("v"), py::arg("file"), R"doc(
+        Store the data structure to a file.
+
+        Parameters:
+            v: Data structure to store.
+            file (str): Name of the file where to store the data structure.
+
+        Returns:
+            True if the data structure was successfully stored, otherwise False.
+    )doc");
+    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("v"), py::arg("file"), R"doc(
+        Load the data structure from a file.
+
+        Parameters:
+            v: Data structure to load.
+            file (str): Name of the file where to load the data structure from.
+
+        Returns:
+            True if the data structure was successfully loaded, otherwise False.
+        )doc");
 
 
     return py::class_<T>(m, name)
@@ -37,7 +69,7 @@ inline auto add_enc_vector(py::module &m, const char* name){
         return !self.empty();
     })
     //TODO: swap method
-    //TODO: load, serialize
+    //TODO: serialiize
     //TODO: sample
     //TODO: get_inter_sampled_values
     .def("__iter__", [](const py::sequence &self){

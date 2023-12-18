@@ -14,13 +14,44 @@ template <class T>
 inline auto add_int_vector(py::module &m, const char* name){
 
     //utility functions to test size
-    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("sdsl_object"));
-    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("sdsl_object"));
-    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
-    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("sdsl_object"), py::arg("file_name"));
+    m.def("size_in_bytes", &sdsl::size_in_bytes<T>, py::arg("v"), R"doc(
+        Returns the size of the data structure in bytes.
+
+        Parameters:
+            v: Data structure to get the size of.
+
+        Returns:
+            The size of the data structure in bytes.)doc");
+    m.def("size_in_mega_bytes", &sdsl::size_in_mega_bytes<T>, py::arg("v"), R"doc(
+        Returns the size of the data structure in megabytes.
+
+        Parameters:
+            v: Data structure to get the size of.
+
+        Returns:
+            The size of the data structure in megabytes.)doc");
+    m.def("store_to_file", &sdsl::store_to_file<T>, py::arg("v"), py::arg("file"), R"doc(
+        Store the data structure to a file.
+
+        Parameters:
+            v: Data structure to store.
+            file (str): Name of the file where to store the data structure.
+
+        Returns:
+            True if the data structure was successfully stored, otherwise False.
+    )doc");
+    m.def("load_from_file", &sdsl::load_from_file<T>, py::arg("v"), py::arg("file"), R"doc(
+        Load the data structure from a file.
+
+        Parameters:
+            v: Data structure to load.
+            file (str): Name of the file where to load the data structure from.
+
+        Returns:
+            True if the data structure was successfully loaded, otherwise False.
+    )doc");
 
 
-    //NOTE: in tests of int_vector<0> with int_width = 0 the width becomes 64 automatically, this might not be the expected behavior
     return py::class_<T>(m, name, py::buffer_protocol())
         .def(py::init([](uint64_t size, uint64_t default_value, uint8_t int_width){
             return new T(size, default_value, int_width);
@@ -90,15 +121,7 @@ inline auto add_int_vector(py::module &m, const char* name){
                 max_size
                 capacity
         )doc")
-        //TODO, data pointer:
-        /*
-        .def("data", &T::data, py::return_value_policy::reference_internal, R"doc(
-            Pointer to the raw data of the int_vector.
-
-            Returns:
-                pointer to the raw data of the int_vector
-        )doc")
-        */
+        //TODO, data pointer
         .def("get_int", &T::get_int, py::arg("idx"), py::arg("len") = 64, R"doc(
             Get the integer value of the binary string of length len starting at position idx in the int_vector.
 
@@ -149,13 +172,11 @@ inline auto add_int_vector(py::module &m, const char* name){
             See Also:
                 width
         )doc")
-        //TODO: fix these functions 
-        //.def("write_data", &T::write_data, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>(), py::arg("out"), "Write data to a stream")
+        //TODO: test write data
         .def("write_data", [](const T& self){
             py::print(self.write_data(std::cout));
         })
         //TODO: serialize funciton and serialize to buffer info
-        //TODO: load from stream function
         .def("__getitem__", [](const T &self, size_t index) {
             if (index >= self.size()) {
                 throw py::index_error("Index out of bounds");
@@ -204,13 +225,12 @@ inline auto add_int_vector(py::module &m, const char* name){
         .def(py::self |= py::self, "Bitwise OR assignment operator.")
         .def(py::self ^= py::self, "Bitwise XOR assignment operator.")
         
-        //TODO: test rest of iterator methods.
         .def("__iter__", [](const py::sequence &self){
             return py::make_iterator(self.begin(), self.end());
         },
         py::keep_alive<0, 1>(), py::is_operator(), "Iterator for int_vector")
         
-        //TODO: add dunder   methods
+        //TODO: add dunder methods
         .def("__str__", [](T& self){
             return sdsl::util::to_string(self);
         });
