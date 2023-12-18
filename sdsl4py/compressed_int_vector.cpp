@@ -57,6 +57,18 @@ inline auto add_compressed_vector(py::module &m, const char* name){
     .def(py::init([](const sdsl::int_vector<0> container){
         return new T(container);
     }), py::arg("container"))
+    .def(py::init([](const sdsl::int_vector<8> container){
+        return new T(container);
+    }), py::arg("container"))
+    .def(py::init([](const sdsl::int_vector<16> container){
+        return new T(container);
+    }), py::arg("container"))
+    .def(py::init([](const sdsl::int_vector<32> container){
+        return new T(container);
+    }), py::arg("container"))
+    .def(py::init([](const sdsl::int_vector<64> container){
+        return new T(container);
+    }), py::arg("container"))
     .def(py::init<>())
     .def("__getitem__", [](const T v, int index){
         return v[index];
