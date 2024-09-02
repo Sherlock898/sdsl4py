@@ -20,7 +20,7 @@ The vectors can be compressed into enc, vlc or dac vectors.
 ```python
 import sdsl4py
 
-v = sdsl4py.int_vector(size=100, default_value=0, width=8)
+v = sdsl4py.int_vector(size=100, default_value=0, int_width=8)
 for i in range(100):
     v[i] = i
 
